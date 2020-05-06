@@ -41,10 +41,10 @@ class EventConsumer(object):
             if self.stop:
                 break
 
-            count = 0
+            num_events = 0
             for event in self.get_events(count=count, block=block):
                 yield event
-                count += 1
+                num_events += 1
 
-            if not count:
+            if not num_events:
                 time.sleep(sleep)
