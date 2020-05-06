@@ -1,23 +1,24 @@
 import logging
+import time
 
 import inflection
-
 from .events import Event, RedisEvent
 
 logger = logging.getLogger(__name__)
 
 
 class EventConsumer(object):
-    def __init__(self, streams, consumer_name, db):
+    def __init__(self, streams, group, consumer_name, db, ):
         """
         An event consumer
 
         :param streams: List of stream names
-        :param consumer_name: The name of this consumer group
+        :param group: The name of this consumer group
+        :param consumer_name: The name of this consumer
         :param db: A walrus DB object
         """
         self.db = db
-        self.cg = self.db.consumer_group(consumer_name, streams)
+        self.cg = self.db.consumer_group(consumer_name, streams, consumer_name)
         self.cg.create(mkstream=True)
         self.stop = False
 
@@ -35,10 +36,15 @@ class EventConsumer(object):
                     event = event[b'event'].decode('utf-8')
                     yield Event.deserialize(event, RedisEvent(getattr(self.cg, inflection.underscore(stream)), event_id))
 
-    def iter_events(self, count=10, block=10):
+    def iter_events(self, count=10, block=None, sleep=0.1):
         while True:
             if self.stop:
                 break
 
+            count = 0
             for event in self.get_events(count=count, block=block):
                 yield event
+                count += 1
+
+            if not count:
+                time.sleep(sleep)
