@@ -1,15 +1,21 @@
 import json
 import logging
 
-from walrus import Database
 from .events import Event, RedisEvent
 
 logger = logging.getLogger(__name__)
 
 
 class EventConsumer(object):
-    def __init__(self, streams, consumer_name, *args, **kwargs):
-        self.db = Database(*args, **kwargs)
+    def __init__(self, streams, consumer_name, db):
+        """
+        An event consumer
+
+        :param streams: List of stream names
+        :param consumer_name: The name of this consumer group
+        :param db: A walrus DB object
+        """
+        self.db = db
         self.cg = self.db.consumer_group(consumer_name, streams)
         self.cg.create(mkstream=True)
         self.stop = False
