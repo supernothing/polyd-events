@@ -75,6 +75,17 @@ class Vote(Event):
         except AttributeError:
             pass
 
+## Non-PSD events
+# TODO do these in a more reasonable way
+# just reusing these Event classes for expediency
+
+
+class FileDownloaded(Event):
+    STR_VALUES = ['community', 'path']
+
+    def __init__(self, community, path, stream=None):
+        super().__init__(community, {'path': path}, stream=None)
+
 
 class RedisEvent(object):
     def __init__(self, stream, event_id):
