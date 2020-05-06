@@ -8,7 +8,7 @@ logger = logging.getLogger(__name__)
 
 
 class EventConsumer(object):
-    def __init__(self, streams, group, consumer_name, db, ):
+    def __init__(self, streams, group, consumer_name, db):
         """
         An event consumer
 
@@ -18,7 +18,7 @@ class EventConsumer(object):
         :param db: A walrus DB object
         """
         self.db = db
-        self.cg = self.db.consumer_group(consumer_name, streams, consumer_name)
+        self.cg = self.db.consumer_group(group, streams, consumer_name)
         self.cg.create(mkstream=True)
         self.stop = False
 
