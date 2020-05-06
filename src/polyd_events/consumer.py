@@ -35,10 +35,10 @@ class EventConsumer(object):
                     event = event[b'event'].decode('utf-8')
                     yield Event.deserialize(event, RedisEvent(getattr(self.cg, inflection.underscore(stream)), event_id))
 
-    def iter_events(self):
+    def iter_events(self, count=10, block=10):
         while True:
             if self.stop:
                 break
 
-            for event in self.get_events(block=1):
+            for event in self.get_events(count=count, block=block):
                 yield event
