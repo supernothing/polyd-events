@@ -1,5 +1,6 @@
-import json
 import logging
+
+import inflection
 
 from .events import Event, RedisEvent
 
@@ -32,7 +33,7 @@ class EventConsumer(object):
                         logger.warning('got malformed event: %s', str(event))
                         continue
                     event = event[b'event'].decode('utf-8')
-                    yield Event.deserialize(event, RedisEvent(getattr(self.cg, stream), event_id))
+                    yield Event.deserialize(event, RedisEvent(getattr(self.cg, inflection.underscore(stream)), event_id))
 
     def iter_events(self):
         while True:
