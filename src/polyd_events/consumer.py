@@ -1,7 +1,10 @@
 import json
+import logging
 
 from walrus import Database
 from .events import Event, RedisEvent
+
+logger = logging.getLogger(__name__)
 
 
 class EventConsumer(object):
@@ -18,8 +21,10 @@ class EventConsumer(object):
             for stream, events in resp:
                 stream = stream.decode('utf-8')
                 for event_id, event in events:
-                    print(stream, event_id, event)
                     event_id = event_id.decode('utf-8')
+                    if b'event' not in event:
+                        logger.warning('got malformed event: %s', str(event))
+                        continue
                     event = event[b'event'].decode('utf-8')
                     yield Event.deserialize(event, RedisEvent(getattr(self.cg, stream), event_id))
 

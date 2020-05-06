@@ -1,6 +1,11 @@
-import sys
 import json
+import logging
+import sys
+
 import inflection
+
+
+logger = logging.getLogger(__name__)
 
 
 class Event(object):
@@ -56,7 +61,6 @@ class Assertion(Event):
             if type(self.bid) == list:
                 self.bid = int(self.bid[0])
         except AttributeError:
-            print('attr error')
             pass
 
 
@@ -69,7 +73,6 @@ class Vote(Event):
             if type(self.votes) == list:
                 self.votes = int(self.votes[0])
         except AttributeError:
-            print('attr error')
             pass
 
 
