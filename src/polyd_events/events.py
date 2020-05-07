@@ -83,8 +83,9 @@ class Vote(Event):
 class FileDownloaded(Event):
     STR_VALUES = ['community', 'path']
 
-    def __init__(self, community, path, bounty, stream=None):
-        super().__init__(community, {'event': 'file_downloaded',
+    @classmethod
+    def from_path(cls, community, path, bounty, stream=None):
+        return cls(community, {'event': 'file_downloaded',
                                      'data': {'path': path, 'bounty': json.loads(bounty.json)}}, stream=stream)
 
     def serialize(self):
