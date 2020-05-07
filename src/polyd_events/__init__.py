@@ -4,5 +4,5 @@ event_types = [_inflection.underscore(cls.__name__) for cls in events.Event.__su
 
 communities = [
     'nu',
-    'lima'
+    'omicron'
 ]
