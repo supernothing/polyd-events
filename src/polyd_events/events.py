@@ -84,7 +84,8 @@ class FileDownloaded(Event):
     STR_VALUES = ['community', 'path']
 
     def __init__(self, community, path, bounty, stream=None):
-        super().__init__(community, {'path': path, 'bounty': json.loads(bounty.json)}, stream=stream)
+        super().__init__(community, {'event': 'filedownloaded',
+                                     'data': {'path': path, 'bounty': json.loads(bounty.json)}}, stream=stream)
 
     def serialize(self):
         return json.dumps((self.community, self.json))
