@@ -13,7 +13,7 @@ class Event(object):
 
     def __init__(self, community, event, stream=None):
         e_json = json.dumps(event)
-        self.__dict__ = event['data']
+        self.__dict__ = event['data'] if 'data' in event else self.__dict__
         self.event = event['event']
         self.block_number = event.get('block_number', -1)
         self.txhash = event.get('txhash', '')
@@ -83,8 +83,17 @@ class Vote(Event):
 class FileDownloaded(Event):
     STR_VALUES = ['community', 'path']
 
-    def __init__(self, community, path, stream=None):
-        super().__init__(community, {'path': path}, stream=None)
+    def __init__(self, community, path, bounty, stream=None):
+        super().__init__(community, {'path': path, 'bounty': json.loads(bounty.json)}, stream=stream)
+
+    def serialize(self):
+        return json.dumps((self.community, self.json))
+
+    @classmethod
+    def deserialize(cls, data, stream=None):
+        community, data = json.loads(data)
+        data = json.loads(data)
+        return Event.from_event(community, data, stream=stream)
 
 
 class RedisEvent(object):
