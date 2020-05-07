@@ -11,5 +11,4 @@ class EventProducer(object):
         self.max_len = max_len
 
     def add_event(self, event):
-        self.stream.add()
         self.stream.add({'event': event.serialize()}, maxlen=self.max_len)
