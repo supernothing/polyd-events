@@ -8,7 +8,7 @@ logger = logging.getLogger(__name__)
 
 
 class EventConsumer(object):
-    def __init__(self, streams, group, consumer_name, db):
+    def __init__(self, streams, group, consumer_name, db, consume_from_end=False):
         """
         An event consumer
 
@@ -21,6 +21,9 @@ class EventConsumer(object):
         self.cg = self.db.consumer_group(group, streams, consumer_name)
         self.cg.create(mkstream=True)
         self.stop = False
+
+        if consume_from_end:
+            self.cg.set_id('$')
 
     def get_events(self, count=1, block=0):
         resp = self.cg.read(count, block)
